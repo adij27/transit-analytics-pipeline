@@ -6,6 +6,18 @@ An end-to-end analytics pipeline built on **BigQuery + dbt + Looker Studio**, tr
 
 ---
 
+## Business Problem
+
+Bike-sharing platforms need to understand rider behavior, optimize station placement, and improve operational efficiency.
+
+This project answers key questions:
+- When do users ride the most?
+- What is the difference between subscribers vs casual riders?
+- Which stations drive the highest traffic?
+- How can operations optimize bike availability?
+
+---
+
 ## What This Project Does
 
 Raw public data → cleaned staging layer → dimensional model → BI dashboard.
@@ -13,6 +25,16 @@ Raw public data → cleaned staging layer → dimensional model → BI dashboard
 The pipeline ingests NYC Citi Bike trip data from BigQuery's public dataset, applies transformation logic using dbt, and surfaces KPIs in a Looker Studio dashboard — modeling the exact analytics engineering workflow used in production data teams.
 
 **[View Live Dashboard →](https://datastudio.google.com/reporting/f2d827d0-d9c0-40b8-b4ba-f0fb045bc9f7/page/9CKwF)**
+
+
+---
+
+## Why This Matters
+
+This project replicates a real-world analytics engineering workflow:
+- Raw ingestion → staging → marts → BI
+- Separation of concerns using dbt
+- Reproducible and testable transformations
 
 ---
 
@@ -25,6 +47,18 @@ The pipeline ingests NYC Citi Bike trip data from BigQuery's public dataset, app
 | BI / Visualization | Looker Studio |
 | Language | SQL, Python |
 | Version Control | Git / GitHub |
+
+---
+
+## Architecture
+
+BigQuery (raw public dataset)
+        ↓
+dbt staging (data cleaning, validation)
+        ↓
+dbt marts (star schema modeling)
+        ↓
+Looker Studio (dashboard + KPIs)
 
 ---
 
@@ -46,6 +80,15 @@ bigquery-public-data.new_york_citibike.citibike_trips   ← source
    station_id, name,              All trip fields +
    latitude, longitude            trip_length_category
 ```
+
+---
+
+## Performance Considerations
+
+- Partitioned fact table by trip_date
+- Reduced query cost by aggregating frequently used fields
+- Used views in staging layer to avoid data duplication
+
 
 ---
 
@@ -112,7 +155,12 @@ dbt run
 
 # 5. Run tests
 dbt test
+
+#6. To generate docs
+dbt docs generate
+dbt docs serve
 ```
+
 
 ---
 
@@ -127,5 +175,6 @@ dbt test
 - **Version-controlled analytics** — full Git workflow
 
 ---
+
 
 *Built by [Aditya Jadhav](https://linkedin.com/in/aditya-jadhav-547b58197) · M.S. Data Analytics, NMSU*

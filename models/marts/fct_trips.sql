@@ -1,3 +1,12 @@
+    {{ config(                                                                                                                                                                        
+      materialized='table',                                                                                                                                                         
+      partition_by={                                                                                                                                                                
+        "field": "starttime",                                                                                                                                                       
+        "data_type": "timestamp",                                                                                                                                                 
+        "granularity": "day"                                                                                                                                                      
+      }                                                                                                                                                                             
+  ) }}    
+
 with trips as (
                                                                                                                                                                                     
       select * from {{ ref('stg_citibike_trips') }}
@@ -53,6 +62,6 @@ with trips as (
       left join start_stations s                                                                                                                                                    
           on t.start_station_id = s.station_id                                                                                                                                      
                                                             
-  )                                       
-
+  )                                                           
+            
   select * from final    
