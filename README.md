@@ -156,7 +156,7 @@ dbt run
 # 5. Run tests
 dbt test
 
-#6. To generate docs
+#6. Generate dbt docs
 dbt docs generate
 dbt docs serve
 ```
@@ -175,6 +175,12 @@ dbt docs serve
 - **Version-controlled analytics** — full Git workflow
 
 ---
+
+## Future Improvements
+
+- Implement incremental models in dbt for scalability
+- Add snapshotting for slowly changing dimensions
+- Introduce orchestration (Airflow / Cloud Composer)
 
 
 *Built by [Aditya Jadhav](https://linkedin.com/in/aditya-jadhav-547b58197) · M.S. Data Analytics, NMSU*
