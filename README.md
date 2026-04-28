@@ -2,7 +2,7 @@
 
 An end-to-end analytics pipeline built on **BigQuery + dbt + Looker Studio**, transforming 61.7 million raw NYC Citi Bike trips into a production-ready star schema and interactive dashboard.
 
-![Dashboard](/screenshot/dashboard.png)
+![Dashboard](/screenshots/dashboard.png)
 
 ---
 
