@@ -18,6 +18,33 @@ with stations as (
       from {{ ref('stg_citibike_trips') }}
       where end_station_id is not null
 
+  ),
+
+  -- Take one record per station_id, pick the most common name
+  deduped as (
+
+      select
+          station_id,
+          station_name,
+          latitude,
+          longitude,
+          row_number() over (
+              partition by station_id
+              order by station_name
+          ) as rn
+      from stations
+
   )
 
-  select * from stations
+    select
+      station_id,
+      station_name,
+      latitude,
+      longitude
+    from deduped
+    where rn = 1
+
+
+
+
+--   select * from stations

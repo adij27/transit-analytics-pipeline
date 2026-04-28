@@ -1,0 +1,36 @@
+                                                                                                                                                                      
+  models:
+    - name: stg_citibike_trips
+      description: "Cleaned and transformed NYC Citi Bike trip data. Filters null/zero duration trips and extracts time dimensions."                                                
+      columns:                                                                                                                                                                      
+        - name: bikeid                                                                                                                                                              
+          description: "Unique bike identifier"                                                                                                                                     
+          tests:                                                                                                                                                                  
+            - not_null
+                                                                                                                                                                                    
+        - name: starttime
+          description: "Trip start timestamp"                                                                                                                                       
+          tests:                                                                                                                                                                  
+            - not_null
+
+        - name: tripduration
+          description: "Trip duration in seconds (nulls and zeros filtered in staging)"
+          tests:                                                                                                                                                                    
+            - not_null
+                                                                                                                                                                                    
+        - name: usertype                                                                                                                                                          
+          description: "Subscriber (annual member) or Customer (casual rider)"
+          tests:                                                                                                                                                                    
+            - not_null
+            - accepted_values:                                                                                                                                                      
+                values: ['Subscriber', 'Customer']                                                                                                                                
+                                                                                                                                                                                    
+        - name: start_station_id                                                                                                                                                    
+          description: "Start station identifier"
+          tests:                                                                                                                                                                    
+            - not_null                                                                                                                                                            
+
+        - name: end_station_id
+          description: "End station identifier"
+          tests:
+            - not_null  

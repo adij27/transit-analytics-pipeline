@@ -1,0 +1,42 @@
+  models:
+    - name: dim_stations
+      description: "Unique Citi Bike stations with coordinates. Combines start and end station data."                                                                               
+      columns:                                                                                                                                                                      
+        - name: station_id                                                                                                                                                          
+          description: "Unique station identifier"                                                                                                                                  
+          tests:                                                                                                                                                                  
+            - not_null
+            - unique
+                                                                                                                                                                                    
+        - name: station_name
+          description: "Station name"                                                                                                                                               
+          tests:                                                                                                                                                                  
+            - not_null
+
+    - name: fct_trips
+      description: "One row per Citi Bike trip. Fact table at the center of the star schema."
+      columns:                                                                                                                                                                      
+        - name: bikeid
+          description: "Bike identifier"                                                                                                                                            
+          tests:                                                                                                                                                                  
+            - not_null                                                                                                                                                              
+                                                                                                                                                                                  
+        - name: starttime
+          description: "Trip start timestamp"
+          tests:                                                                                                                                                                    
+            - not_null
+                                                                                                                                                                                    
+        - name: usertype                                                                                                                                                          
+          description: "Subscriber or Customer"
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['Subscriber', 'Customer']                                                                                                                                  
+   
+        - name: trip_length_category                                                                                                                                                
+          description: "short / medium / long based on duration"                                                                                                                  
+          tests:                                                                                                                                                                    
+            - not_null
+            - accepted_values:                                                                                                                                                      
+                values: ['short', 'medium', 'long']                                                                                                                               
+

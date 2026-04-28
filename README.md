@@ -30,6 +30,8 @@ The pipeline ingests NYC Citi Bike trip data from BigQuery's public dataset, app
 
 ## Data Model (Star Schema)
 
+![Lineage](screenshots/lineage.png)
+
 ```
 bigquery-public-data.new_york_citibike.citibike_trips   ← source
                         ↓
@@ -117,9 +119,10 @@ dbt test
 ## Skills Demonstrated
 
 - **Dimensional modeling** — star schema with fact and dimension tables
-- **dbt** — staging → marts transformation pipeline, materialization strategy
-- **BigQuery** — cloud data warehouse, SQL optimization
-- **Data quality** — null handling, filtering invalid records, derived fields
+- **dbt** — staging → marts pipeline, materialization strategy, `ref()` dependency management
+- **Data quality** — 16 dbt tests (not_null, unique, accepted_values) across all models
+- **dbt documentation** — auto-generated data catalog with column descriptions and lineage graph
+- **BigQuery** — cloud data warehouse, SQL optimization, table vs view materialization
 - **BI reporting** — Looker Studio connected to BigQuery tables
 - **Version-controlled analytics** — full Git workflow
 
