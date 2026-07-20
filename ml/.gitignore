@@ -1,5 +1,5 @@
 .env
-models/*.joblib
+# models/*.joblib  # committed for Render deployment
 models/*.pkl
 data/
 predictions.db
