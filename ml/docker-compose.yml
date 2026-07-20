@@ -1,0 +1,10 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=models/citibike_demand_model.joblib
+    volumes:
+      - ./models:/app/models
+      - ./predictions.db:/app/predictions.db

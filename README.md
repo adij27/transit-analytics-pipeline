@@ -45,6 +45,9 @@ This project replicates a real-world analytics engineering workflow:
 | Data Warehouse | Google BigQuery |
 | Transformation | dbt (dbt-bigquery) |
 | BI / Visualization | Looker Studio |
+| ML Model | XGBoost (demand forecasting) |
+| API | FastAPI + Uvicorn |
+| Containerization | Docker |
 | Language | SQL, Python |
 | Version Control | Git / GitHub |
 
@@ -52,13 +55,19 @@ This project replicates a real-world analytics engineering workflow:
 
 ## Architecture
 
-BigQuery (raw public dataset)
+```
+BigQuery (raw public dataset — 61.7M rows)
         ↓
-dbt staging (data cleaning, validation)
+dbt staging (cleaning, type casting, derived fields)
         ↓
-dbt marts (star schema modeling)
+dbt marts (star schema: dim_stations + fct_trips)
         ↓
-Looker Studio (dashboard + KPIs)
+┌─────────────────────┬──────────────────────────┐
+Looker Studio          ML Pipeline (ml/)
+(dashboard + KPIs)     XGBoost demand forecasting
+                       → FastAPI REST endpoint
+                       → Docker container
+```
 
 ---
 
@@ -120,13 +129,25 @@ bigquery-public-data.new_york_citibike.citibike_trips   ← source
 transit_analytics/
 ├── models/
 │   ├── staging/
-│   │   └── stg_citibike_trips.sql    ← cleaning + derived fields
+│   │   └── stg_citibike_trips.sql       ← cleaning + derived fields
 │   └── marts/
-│       ├── dim_stations.sql          ← dimension table
-│       └── fct_trips.sql             ← fact table (star schema)
+│       ├── dim_stations.sql             ← dimension table
+│       └── fct_trips.sql                ← fact table (61.7M rows)
+├── ml/
+│   ├── notebooks/
+│   │   ├── 01_eda.ipynb                 ← exploratory analysis
+│   │   └── 02_training.ipynb            ← model training + evaluation
+│   ├── src/
+│   │   ├── features.py                  ← BigQuery feature extraction
+│   │   └── train.py                     ← XGBoost training script
+│   ├── app/
+│   │   ├── main.py                      ← FastAPI endpoints
+│   │   └── schema.py                    ← Pydantic models
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── requirements.txt
 ├── dbt_project.yml
 ├── screenshots/
-│   └── dashboard.png
 └── README.md
 ```
 
@@ -176,11 +197,42 @@ dbt docs serve
 
 ---
 
+## ML Extension — Demand Forecasting
+
+Built on top of the dbt pipeline, the `ml/` layer adds an XGBoost regression model that predicts hourly trip count per station.
+
+**Features used:** month, day, day_of_week, hour, is_weekend  
+**Target:** hourly trip count per station  
+**Serving:** FastAPI REST API containerized with Docker
+
+```bash
+# Train the model
+cd ml
+pip install -r requirements.txt
+python src/train.py
+
+# Run the API locally
+uvicorn app.main:app --reload
+
+# Or with Docker
+docker-compose up
+```
+
+**Example request:**
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"station_id": "72", "month": 7, "day": 15, "day_of_week": 3, "hour": 8, "is_weekend": 0}'
+```
+
+---
+
 ## Future Improvements
 
 - Implement incremental models in dbt for scalability
 - Add snapshotting for slowly changing dimensions
 - Introduce orchestration (Airflow / Cloud Composer)
+- Deploy ML API to Render for a live public endpoint
 
 
 *Built by [Aditya Jadhav](https://linkedin.com/in/aditya-jadhav-547b58197) · M.S. Data Analytics, NMSU*
